@@ -41,6 +41,10 @@ module Charges
         # NOTE: units is in the range
         units - from_value + 1
       end
+
+      #def unit_amount
+        #compute_amount / units
+      #end
     end
   end
 end

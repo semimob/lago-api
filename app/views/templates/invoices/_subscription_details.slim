@@ -9,11 +9,13 @@
         tr
           td.body-2 = I18n.t('invoice.fees_from_to_date', from_date: I18n.l(invoice_subscription(subscription.id).from_datetime_in_customer_timezone&.to_date, format: :default), to_date: I18n.l(invoice_subscription(subscription.id).to_datetime_in_customer_timezone&.to_date, format: :default))
           td.body-2 = I18n.t('invoice.unit')
+          td.body-2 = I18n.t('invoice.unit_price')
           td.body-2 = I18n.t('invoice.tax_rate')
           td.body-2 = I18n.t('invoice.amount_without_tax')
         tr
           td.body-1 = I18n.t('invoice.subscription_interval', plan_interval: I18n.t("invoice.#{subscription.plan.interval}"), plan_name: subscription.plan.invoice_name)
           td.body-2 = 1
+          td.body-2 = MoneyHelper.format(invoice_subscription(subscription.id).subscription_amount)
           td.body-2 == TaxHelper.applied_taxes(invoice_subscription(subscription.id).subscription_fee)
           td.body-2 = MoneyHelper.format(invoice_subscription(subscription.id).subscription_amount)
 
@@ -27,6 +29,7 @@
             tr
               td.body-2 = I18n.t('invoice.fees_from_to_date', from_date: I18n.l(invoice_subscription(subscription.id).charges_from_datetime_in_customer_timezone&.to_date, format: :default), to_date: I18n.l(invoice_subscription(subscription.id).charges_to_datetime_in_customer_timezone&.to_date, format: :default))
               td.body-2 = I18n.t('invoice.unit')
+              td.body-2 = I18n.t('invoice.unit_price')
               td.body-2 = I18n.t('invoice.tax_rate')
               td.body-2 = I18n.t('invoice.amount_without_tax')
 
@@ -55,8 +58,8 @@
                           .body-3 = I18n.t('invoice.units_prorated_per_period', period: IntervalHelper.interval_name(subscription.plan.interval))
                         - if fee.charge.percentage?
                           .body-3 = I18n.t('invoice.total_events', count: fee.events_count)
-                    td
-                      .body-2 = fee.units
+                    td.body-2 = fee.units
+                    td.body-2 = MoneyHelper.format_with_precision(fee.precise_unit_amount, fee.unit_amount.currency)
                     td.body-2 == TaxHelper.applied_taxes(fee)
                     td.body-2 = MoneyHelper.format(fee.amount)
 
@@ -74,8 +77,8 @@
                         .body-3 = I18n.t('invoice.units_prorated_per_period', period: IntervalHelper.interval_name(subscription.plan.interval))
                       - if fee.charge.percentage?
                         .body-3 = I18n.t('invoice.total_events', count: fee.events_count)
-                  td
-                    .body-2 = fees.sum(&:units)
+                  td.body-2 = fees.sum(&:units)
+                  td.body-2 = MoneyHelper.format_with_precision(fees.sum(&:precise_unit_amount), fee.unit_amount.currency)
                   td.body-2 == TaxHelper.applied_taxes(fee)
                   td.body-2 = MoneyHelper.format(fees.sum(&:amount))
 
@@ -91,6 +94,7 @@
               - pay_in_advance_interval = charge_pay_in_advance_interval(invoice_subscription(subscription.id).timestamp, subscription)
               td.body-2 = I18n.t('invoice.fees_from_to_date', from_date: I18n.l(pay_in_advance_interval[:charges_from_date], format: :default), to_date: I18n.l(pay_in_advance_interval[:charges_to_date], format: :default))
               td.body-2 = I18n.t('invoice.unit')
+              td.body-2 = I18n.t('invoice.unit_price')
               td.body-2 = I18n.t('invoice.tax_rate')
               td.body-2 = I18n.t('invoice.amount_without_tax')
 
@@ -119,8 +123,8 @@
                           .body-3 = I18n.t('invoice.units_prorated_per_period', period: IntervalHelper.interval_name(subscription.plan.interval))
                         - if fee.charge.percentage?
                           .body-3 = I18n.t('invoice.total_events', count: fee.events_count)
-                    td
-                      .body-2 = fee.units
+                    td.body-2 = fee.units
+                    td.body-2 = MoneyHelper.format_with_precision(fee.precise_unit_amount, fee.unit_amount.currency)
                     td.body-2 == TaxHelper.applied_taxes(fee)
                     td.body-2 = MoneyHelper.format(fee.amount)
 
@@ -138,8 +142,8 @@
                         .body-3 = I18n.t('invoice.units_prorated_per_period', period: IntervalHelper.interval_name(subscription.plan.interval))
                       - if fee.charge.percentage?
                         .body-3 = I18n.t('invoice.total_events', count: fee.events_count)
-                  td
-                    .body-2 = fees.sum(&:units)
+                  td.body-2 = fees.sum(&:units)
+                  td.body-2 = MoneyHelper.format_with_precision(fees.sum(&:precise_unit_amount), fee.unit_amount.currency)
                   td.body-2 == TaxHelper.applied_taxes(fee)
                   td.body-2 = MoneyHelper.format(fees.sum(&:amount))
 

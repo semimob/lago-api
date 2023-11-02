@@ -420,6 +420,7 @@ html
           tr
             td.body-2 = I18n.t('invoice.item')
             td.body-2 = I18n.t('invoice.unit')
+            td.body-2 = I18n.t('invoice.unit_price')
             td.body-2 = I18n.t('invoice.tax_rate')
             td.body-2 = I18n.t('invoice.amount_without_tax')
           - fees.each do |fee|
@@ -430,9 +431,9 @@ html
                   .body-1 = fee.invoice_name
                   .body-3 = I18n.t('invoice.breakdown_for_days', breakdown_duration: pay_in_advance_range[:number_of_days], breakdown_total_duration: pay_in_advance_range[:period_duration])
               - else
-                td
-                  .body-1 = fee.invoice_name
+                td.body-1 = fee.invoice_name
               td.body-2 = fee.units
+              td.body-2 = MoneyHelper.format(fee.unit_amount)
               td.body-2 == TaxHelper.applied_taxes(fee)
               td.body-2 = MoneyHelper.format(fee.amount)
 

@@ -7,13 +7,13 @@ module Events
 
       # NOTE: keeps in mind that events could contains duplicated transaction_id
       #       and should be deduplicated depending on the aggregation logic
-      def events
+      def events(force_from: false)
         scope = Clickhouse::EventsRaw.where(external_subscription_id: subscription.external_id)
-          .where('events_raw.timestamp >= ?', from_datetime)
           .where('events_raw.timestamp <= ?', to_datetime)
           .where(code:)
           .order(timestamp: :asc)
 
+        scope = scope.where('events_raw.timestamp >= ?', from_datetime) if force_from || use_from_boundary
         scope = scope.where(numeric_condition) if numeric_property
 
         return scope unless group
@@ -21,14 +21,23 @@ module Events
         scope
       end
 
-      def events_values
-        events
+      def events_values(limit: nil, force_from: false)
+        scope = events(force_from:)
           .group('events_raw.transaction_id, events_raw.properties, events_raw.timestamp')
-          .pluck(Arel.sql(
+
+        scope = scope.limit(limit) if limit
+
+        scope.pluck(
+          Arel.sql(
             ActiveRecord::Base.sanitize_sql_for_conditions(
               ['toDecimal128(events_raw.properties[?], ?)', aggregation_property, DECIMAL_SCALE],
             ),
-          ))
+          ),
+        )
+      end
+
+      def prorated_events_values
+        # TODO
       end
 
       def count
@@ -49,6 +58,18 @@ module Events
       end
 
       delegate :last, to: :events
+
+      def sum
+        # TODO
+      end
+
+      def prorated_sum
+        # TODO
+      end
+
+      def sum_date_breakdown
+        # TODO
+      end
 
       private
 

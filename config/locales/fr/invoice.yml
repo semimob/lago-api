@@ -1,6 +1,7 @@
 ---
 fr:
   invoice:
+    adjustment_per_transaction: Adjustment for min/max per transaction
     all_subscriptions: Tous les abonnements
     all_usage_based_fees: Tous les frais de consommation
     amount: Montant
@@ -18,7 +19,11 @@ fr:
     details: Détails de %{resource}
     document_name: Facture
     due_date: Date d'échéance le %{date}
+    fee_per_transaction: Fee per transaction
     fees_from_to_date: Frais de conso. du %{from_date} au %{to_date}
+    free_units_per_transaction:
+      one: Free units for 1 transaction
+      other: Free units for %{count} transactions
     invoice_number: Nº de facture
     issue_date: Date d'émission
     item: Article
@@ -29,6 +34,7 @@ fr:
     notice_prorated: Si une unité est ajoutée ou supprimée pendant la période de facturation, nous calculons le prix au prorata en fonction du ratio des jours restants ou utilisés. Par exemple, s'il reste 15 jours dans le plan, nous multiplions le prix par 15/%{days_in_month}, et si une unité a été utilisée pendant 10 jours, nous multiplions le prix par 10/%{days_in_month}.
     payment_term: Délai de paiement
     payment_term_days: "%{net_payment_term} jours"
+    percentage_rate_on_amount: Percentage rate on amount
     powered_by: Document généré par
     prepaid_credits: Crédit(s) prépayé(s)
     prepaid_credits_with_value: Crédit(s) prépayé(s) - %{wallet_name}

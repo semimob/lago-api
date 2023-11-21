@@ -1,6 +1,7 @@
 ---
 de:
   invoice:
+    adjustment_per_transaction: Adjustment for min/max per transaction
     all_subscriptions: Alle Abonnements
     all_usage_based_fees: Alle nutzungsabhängigen Gebühren
     amount: Betrag
@@ -18,7 +19,11 @@ de:
     details: "%{resource} Details"
     document_name: Rechnung
     due_date: Fälligkeit %{date}
+    fee_per_transaction: Fee per transaction
     fees_from_to_date: Gebühren vom %{from_date} bis %{to_date}
+    free_units_per_transaction:
+      one: Free units for 1 transaction
+      other: Free units for %{count} transactions
     invoice_number: Rechnungsnummer
     issue_date: Ausgabedatum
     item: Artikel
@@ -29,6 +34,7 @@ de:
     notice_prorated: Wenn eine Einheit während des Abrechnungszeitraums hinzugefügt oder entfernt wird, berechnen wir den anteiligen Preis basierend auf dem Verhältnis der verbleibenden oder genutzten Tage zur Gesamtzahl der Tage im Plan. Zum Beispiel, wenn noch 15 Tage im Plan verbleiben, multiplizieren wir den Preis mit 15/%{days_in_month}, und wenn eine Einheit für 10 Tage genutzt wurde, multiplizieren wir den Preis mit 10/%{days_in_month}.
     payment_term: Zahlungsfrist
     payment_term_days: "%{net_payment_term} Tage"
+    percentage_rate_on_amount: Percentage rate on amount
     powered_by: Bereitgestellt von
     prepaid_credits: Prepaid-Guthaben
     prepaid_credits_with_value: Prepaid-Guthaben - %{wallet_name}

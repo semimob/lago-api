@@ -46,7 +46,7 @@ module Invoices
       elsif charge?
         'invoices/charge'
       else
-        "invoices/v#{invoice.version_number}"
+        "invoices/v#{invoice.version_number + 1}"
       end
     end
 

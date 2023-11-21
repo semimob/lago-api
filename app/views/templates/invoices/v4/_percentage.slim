@@ -1,0 +1,47 @@
+tr.border-none
+  td.body-1
+    = invoice_name
+    - unless billable_metric.recurring_count_agg?
+      - if billable_metric.weighted_sum_agg?
+        .body-3 = I18n.t('invoice.units_prorated_per_period', period: IntervalHelper.interval_name(subscription.plan.interval))
+      - if charge.percentage?
+        .body-3 = I18n.t('invoice.total_events', count: events_count)
+  td.body-2
+  td.body-2
+  td.body-2
+  td.body-2
+/ Free units per transaction
+tr.details.border-none
+  td.body-2 = I18n.t('invoice.free_units_per_transaction', count: amount_details['free_events'])
+  td.body-2 = amount_details['free_units']
+  td.body-2 = MoneyHelper.format(0.to_money(amount_currency))
+  td.body-2 == TaxHelper.applied_taxes(self)
+  td.body-2 = MoneyHelper.format(0.to_money(amount_currency))
+/ Percentage rate on amount
+tr.details.border-none
+  td.body-2 = I18n.t('invoice.percentage_rate_on_amount')
+  td.body-2 = amount_details['paid_units']
+  td.body-2 = MoneyHelper.format(amount_details['rate_unit_amount'].to_money(amount_currency))
+  td.body-2 == TaxHelper.applied_taxes(self)
+  td.body-2 = MoneyHelper.format(amount_details['rate_total_amount'].to_money(amount_currency))
+/ Fixed fee per transaction
+tr.details.border-none
+  td.body-2 = I18n.t('invoice.fee_per_transaction')
+  td.body-2 = amount_details['paid_events']
+  td.body-2 = MoneyHelper.format(amount_details['fixed_fee_unit_amount'].to_money(amount_currency))
+  td.body-2 == TaxHelper.applied_taxes(self)
+  td.body-2 = MoneyHelper.format(amount_details['fixed_fee_total_amount'].to_money(amount_currency))
+/ Adjustment for min/max per transaction
+tr.details.border-none
+  td.body-2 = I18n.t('invoice.adjustment_per_transaction')
+  td.body-2 = 1
+  td.body-2 = MoneyHelper.format(amount_details['min_max_adjustment_total_amount'].to_money(amount_currency))
+  td.body-2 == TaxHelper.applied_taxes(self)
+  td.body-2 = MoneyHelper.format(amount_details['min_max_adjustment_total_amount'].to_money(amount_currency))
+/ Sub total
+tr.details.subtotal
+  td.body-2 = I18n.t('invoice.sub_total')
+  td.body-2
+  td.body-2
+  td.body-2
+  td.body-2 = MoneyHelper.format(amount)

@@ -1,0 +1,63 @@
+tr.border-none
+  td.body-1
+    = invoice_name
+    - unless billable_metric.recurring_count_agg?
+      - if billable_metric.weighted_sum_agg?
+        .body-3 = I18n.t('invoice.units_prorated_per_period', period: IntervalHelper.interval_name(subscription.plan.interval))
+      - if charge.percentage?
+        .body-3 = I18n.t('invoice.total_events', count: events_count)
+  td.body-2
+  td.body-2
+  td.body-2
+  td.body-2
+/ First graduated range
+tr.details.border-none
+  - first_range = amount_details['graduated_percentage_ranges'][0]
+  td.body-2 = I18n.t('invoice.first_to', to: first_range['to_value'])
+  td.body-2 = first_range['units']
+  td.body-2 = MoneyHelper.format(first_range['per_unit_amount'].to_money(amount_currency))
+  td.body-2 == TaxHelper.applied_taxes(self)
+  td.body-2 = MoneyHelper.format(first_range['per_unit_total_amount'].to_money(amount_currency))
+- amount_details['graduated_percentage_ranges'][1..-2].each do |range|
+  tr.details.border-none
+    td.body-2 = I18n.t('invoice.next_from_to', from: range['from_value'], to: range['to_value'])
+    td.body-2 = range['units']
+    td.body-2 = MoneyHelper.format(range['per_unit_amount'].to_money(amount_currency))
+    td.body-2 == TaxHelper.applied_taxes(self)
+    td.body-2 = MoneyHelper.format(range['per_unit_total_amount'].to_money(amount_currency))
+/ Last graduated range
+tr.details.border-none
+  - last_range = amount_details['graduated_percentage_ranges'][-1]
+  td.body-2 = I18n.t('invoice.last_from', from: last_range['from_value'])
+  td.body-2 = last_range['units']
+  td.body-2 = MoneyHelper.format(last_range['per_unit_amount'].to_money(amount_currency))
+  td.body-2 == TaxHelper.applied_taxes(self)
+  td.body-2 = MoneyHelper.format(last_range['per_unit_total_amount'].to_money(amount_currency))
+/ First flat fee
+tr.details.border-none
+  td.body-2 = I18n.t('invoice.flat_fee_for_the_first', to: first_range['to_value'])
+  td.body-2 = 1
+  td.body-2 = MoneyHelper.format(first_range['flat_unit_amount'].to_money(amount_currency))
+  td.body-2 == TaxHelper.applied_taxes(self)
+  td.body-2 = MoneyHelper.format(first_range['flat_unit_amount'].to_money(amount_currency))
+- amount_details['graduated_percentage_ranges'][1..-2].each do |range|
+  tr.details.border-none
+    td.body-2 = I18n.t('invoice.flat_fee_for_the_next', from: range['from_value'], to: range['to_value'])
+    td.body-2 = 1
+    td.body-2 = MoneyHelper.format(range['flat_unit_amount'].to_money(amount_currency))
+    td.body-2 == TaxHelper.applied_taxes(self)
+    td.body-2 = MoneyHelper.format(range['flat_unit_amount'].to_money(amount_currency))
+/ Last flat fee
+tr.details.border-none
+  td.body-2 = I18n.t('invoice.flat_fee_for_the_last', from: last_range['from_value'])
+  td.body-2 = 1
+  td.body-2 = MoneyHelper.format(last_range['flat_unit_amount'].to_money(amount_currency))
+  td.body-2 == TaxHelper.applied_taxes(self)
+  td.body-2 = MoneyHelper.format(last_range['flat_unit_amount'].to_money(amount_currency))
+/ Sub total
+tr.details.subtotal
+  td.body-2 = I18n.t('invoice.sub_total')
+  td.body-2
+  td.body-2
+  td.body-2
+  td.body-2 = MoneyHelper.format(amount)

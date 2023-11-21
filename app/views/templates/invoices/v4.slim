@@ -241,27 +241,29 @@ html
       .invoice-resume-table tr:first-child td {
         color: #66758F;
       }
-      .invoice-resume-table td {
+      .invoice-resume-table tr {
+        border-bottom: 1px solid #D9DEE7;
+      }
+      .invoice-resume-table tr td {
         padding-top: 8px;
         padding-bottom: 8px;
+        text-align: right;
       }
       .invoice-resume-table td:first-child {
         width: 50%;
+        text-align: left;
       }
       .invoice-resume-table td:nth-child(2) {
-        width: 14%;
+        width: 12.5%;
       }
       .invoice-resume-table td:nth-child(3) {
-        width: 18%;
+        width: 12.5%;
       }
       .invoice-resume-table td:nth-child(4) {
-        width: 18%;
+        width: 12.5%;
       }
-      .invoice-resume-table tr td:last-child {
-        text-align: right;
-      }
-      .invoice-resume-table tr {
-        border-bottom: 1px solid #D9DEE7;
+      .invoice-resume-table td:nth-child(5) {
+        width: 12.5%;
       }
       .invoice-resume table {
         border-collapse: collapse;
@@ -300,15 +302,21 @@ html
       .breakdown-details table {
         border-collapse: collapse;
       }
+      .breakdown-details {
+        margin-top: -15px;
+      }
       .breakdown-details-table tr td {
-        padding-bottom: 12px;
+        padding-bottom: 8px;
+        padding-top: 8px;
       }
       .breakdown-details-table tr td:last-child {
         text-align: right;
       }
-      .breakdown-details-table tr:last-child td {
+      .breakdown-details-table tr td {
         border-bottom: 1px solid #d9dee7;
-        padding-bottom: 24px;
+      }
+      .breakdown-details-table tr:first-child td {
+        border-top: 1px solid #d9dee7;
       }
 
       .powered-by {
@@ -332,6 +340,20 @@ html
         gap: 16px;
         background: #F3F4F6;
         border-radius: 12px;
+      }
+      .invoice-resume-table tr.border-none {
+        border: none;
+      }
+      .invoice-resume-table tr.details td {
+        padding-top: 4px;
+        padding-bottom: 4px;
+      }
+      .invoice-resume-table tr.details td:first-child {
+        padding-left: 16px;
+      }
+      .invoice-resume-table tr.details.subtotal td {
+        color: #66758F;
+        padding-bottom: 8px;
       }
 
     .wrapper
@@ -416,67 +438,12 @@ html
         .body-1 = I18n.t('invoice.due_date', date: I18n.l(payment_due_date, format: :default))
 
       .invoice-resume.mb-24.overflow-auto
-        table.invoice-resume-table width="100%"
-          tr
-            td.body-2 = I18n.t('invoice.item')
-            td.body-2 = I18n.t('invoice.unit')
-            td.body-2 = I18n.t('invoice.unit_price')
-            td.body-2 = I18n.t('invoice.tax_rate')
-            td.body-2 = I18n.t('invoice.amount_without_tax')
-          - fees.each do |fee|
-            tr
-              - if fee.charge.prorated?
-                - pay_in_advance_range = charge_pay_in_advance_proration_range(fee, invoice_subscription(fee.subscription.id).timestamp)
-                td
-                  .body-1 = fee.invoice_name
-                  .body-3 = I18n.t('invoice.breakdown_for_days', breakdown_duration: pay_in_advance_range[:number_of_days], breakdown_total_duration: pay_in_advance_range[:period_duration])
-              - else
-                td.body-1 = fee.invoice_name
-              td.body-2 = fee.units
-              td.body-2 = MoneyHelper.format(fee.unit_amount)
-              td.body-2 == TaxHelper.applied_taxes(fee)
-              td.body-2 = MoneyHelper.format(fee.amount)
-
-        table.total-table width="100%"
-          - if coupons_amount_cents.positive?
-            - credits.coupon_kind.order(created_at: :asc).each do |credit|
-              tr
-                td.body-2
-                td.body-2 #{credit.invoice_coupon_display_name}
-                td.body-2 = '-' +  MoneyHelper.format(credit.amount)
-          tr
-            td.body-2
-            td.body-2 = I18n.t('invoice.sub_total_without_tax')
-            td.body-2 = MoneyHelper.format(sub_total_excluding_taxes_amount)
-          - if applied_taxes.present?
-            - applied_taxes.order(tax_rate: :desc).each do |applied_tax|
-              tr
-                td.body-2
-                td.body-2 = I18n.t('invoice.tax_name', name: applied_tax.tax_name, rate: applied_tax.tax_rate, amount: MoneyHelper.format(applied_tax.fees_amount))
-                td.body-2 = MoneyHelper.format(applied_tax.amount)
-          - else
-            tr
-              td.body-2
-              td.body-2 = I18n.t('invoice.tax_name_with_details', name: 'Tax', rate: 0)
-              td.body-2 = MoneyHelper.format(0.to_money(currency))
-          tr
-            td.body-2
-            td.body-2 = I18n.t('invoice.sub_total_with_tax')
-            td.body-2 = MoneyHelper.format(sub_total_including_taxes_amount)
-          - if credits.credit_note_kind.any?
-            tr
-              td.body-2
-              td.body-2 = I18n.t('invoice.credit_notes')
-              td.body-2 = '-' +  MoneyHelper.format(credit_notes_amount)
-          - if wallet_transactions.exists?
-            tr
-              td.body-2
-              td.body-2 = I18n.t('invoice.prepaid_credits')
-              td.body-2 = '-' + MoneyHelper.format(prepaid_credit_amount)
-          tr
-            td.body-2
-            td.body-1 = I18n.t('invoice.total_due')
-            td.body-1 = MoneyHelper.format(total_amount)
+        - if credit?
+          == SlimHelper.render('templates/invoices/_credit', self)
+        - elsif subscriptions.count == 1
+          == SlimHelper.render('templates/invoices/_subscription_details', self)
+        - else
+          == SlimHelper.render('templates/invoices/_subscriptions_summary', self)
 
       p.body-3.mb-24 = LineBreakHelper.break_lines(organization.invoice_footer)
 
@@ -498,3 +465,6 @@ html
               path fill="#fff" d="M0 0h9.25v9.263H0z"
             clipPath id="c"
               path fill="#fff" d="M0 0h9.25v9.263H0z"
+
+      - if subscriptions.count > 1
+        == SlimHelper.render('templates/invoices/_subscription_details', self)

@@ -1,0 +1,33 @@
+tr.border-none
+  td.body-1
+    = invoice_name
+    - unless billable_metric.recurring_count_agg?
+      - if billable_metric.weighted_sum_agg?
+        .body-3 = I18n.t('invoice.units_prorated_per_period', period: IntervalHelper.interval_name(subscription.plan.interval))
+      - if charge.percentage?
+        .body-3 = I18n.t('invoice.total_events', count: events_count)
+  td.body-2
+  td.body-2
+  td.body-2
+  td.body-2
+/ Free units for the first
+tr.details.border-none
+  td.body-2 = I18n.t('invoice.free_units_for_the_first', count: amount_details['free_units'])
+  td.body-2 = amount_details['free_units']
+  td.body-2 = MoneyHelper.format(0.to_money(amount_currency))
+  td.body-2 == TaxHelper.applied_taxes(self)
+  td.body-2 = MoneyHelper.format(0.to_money(amount_currency))
+/ Fee per package
+tr.details.border-none
+  td.body-2 = I18n.t('invoice.fee_per_package')
+  td.body-2 = amount_details['paid_units']
+  td.body-2 = I18n.t('invoice.fee_per_package_unit_price', amount: MoneyHelper.format(amount_details['per_package_unit_amount'].to_money(amount_currency)), package_size: amount_details['per_package_size'])
+  td.body-2 == TaxHelper.applied_taxes(self)
+  td.body-2 = MoneyHelper.format(amount)
+/ Sub total
+tr.details.subtotal
+  td.body-2 = I18n.t('invoice.sub_total')
+  td.body-2
+  td.body-2
+  td.body-2
+  td.body-2 = MoneyHelper.format(amount)

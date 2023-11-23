@@ -42,7 +42,7 @@ module Events
       end
 
       def last
-        events.reorder(timestamp: :desc, created_at: :desc).first
+        events.reorder(timestamp: :desc, created_at: :desc).first&.properties&.[](aggregation_property)
       end
 
       def sum
@@ -75,6 +75,9 @@ module Events
         events.group(Arel.sql("DATE(#{date_field})"))
           .reorder(Arel.sql("DATE(#{date_field}) ASC"))
           .pluck(Arel.sql("DATE(#{date_field}) AS date, SUM((#{sanitized_propery_name})::numeric)"))
+          .map do |row|
+            { date: row.first.to_date, value: row.last }
+          end
       end
 
       private

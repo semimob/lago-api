@@ -41,8 +41,8 @@ module Wallets
         WalletTransactions::CreateJob.perform_later(
           organization_id: wallet.organization.id,
           wallet_id: wallet.id,
-          paid_credits: threshold_rule.paid_credits,
-          granted_credits: threshold_rule.granted_credits,
+          paid_credits: threshold_rule.paid_credits.to_s,
+          granted_credits: threshold_rule.granted_credits.to_s,
           source: :threshold,
         )
       end

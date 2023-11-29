@@ -38,7 +38,7 @@ module Wallets
 
         return if threshold_rule.nil? || wallet.credits_balance > threshold_rule.threshold_credits
 
-        WalletTransactions::CreateJob.perform_later(
+        WalletTransactions::CreateJob.set(wait: 2.seconds).perform_later(
           organization_id: wallet.organization.id,
           wallet_id: wallet.id,
           paid_credits: threshold_rule.paid_credits.to_s,

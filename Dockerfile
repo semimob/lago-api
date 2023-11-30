@@ -30,5 +30,6 @@ ENV GOCARDLESS_CLIENT_ID $GOCARDLESS_CLIENT_ID
 ENV GOCARDLESS_CLIENT_SECRET $GOCARDLESS_CLIENT_SECRET
 
 COPY --from=build /usr/local/bundle/ /usr/local/bundle
+ENTRYPOINT ["./scripts/import_docker_secrets.sh"]
 
 CMD ["./scripts/start.sh"]

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_28_092231) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_30_085817) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -517,7 +517,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_28_092231) do
     t.integer "payment_attempts", default: 0, null: false
     t.boolean "ready_for_payment_processing", default: true, null: false
     t.uuid "organization_id", null: false
-    t.integer "version_number", default: 3, null: false
+    t.integer "version_number", default: 4, null: false
     t.string "currency"
     t.bigint "fees_amount_cents", default: 0, null: false
     t.bigint "coupons_amount_cents", default: 0, null: false
